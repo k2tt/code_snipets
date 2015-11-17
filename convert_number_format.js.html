@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>数値を3文字カンマ区切り文字列に変換</title>
+</head>
+
+<body>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.convertNumberFormat
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.convertNumberFormat = (function() {
+      'use strict';
+
+      /**
+       * 数値を3文字カンマ区切り文字列に変換
+       * @param {number} - 変換したい数値
+       * @return {string} 変換後の文字列
+       */
+      var convertNumberFormat = function(number) {
+        var temp1 = (number + "").split('.');
+
+        /**
+         * 少数点以下を文字列で保存
+         * @const
+         * @type {string}
+         */
+        var decimal = temp1[1] ? '.' + temp1[1] : '';
+
+        /**
+         * number を逆順にして配列に保存
+         * @const
+         * @type {array}
+         */
+        var reverseNum = temp1[0].split('').reverse();
+
+        var tempArray = [];
+        var results = "";
+
+        /**
+         * 配列を逆順にしつつ、3つ毎にカンマを加える
+         * @param {number} - 処理対象の値
+         * @param {number} - インデックス
+         */
+        reverseNum.map(function(n, i) {
+          if (i > 0 && i % 3 === 0) {
+            tempArray.unshift(',');
+          }
+          tempArray.unshift(n);
+        });
+
+        /**
+         * tempArray 文字列にして小数点以下を連結
+         * @type {string}
+         */
+        results = tempArray.join('') + decimal;
+
+        return results;
+      };
+
+      return convertNumberFormat;
+    }());
+
+    //test
+    var num = MYAPP.modules.convertNumberFormat(1029873.65002);
+    console.log(num);
+  </script>
+
+</body>
+
+</html>

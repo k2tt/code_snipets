@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>observer pattern</title>
+</head>
+
+<body>
+
+  <div id="btn1">btn1</div>
+  <div id="box1">box1</div>
+  <div id="box2">box2</div>
+
+  <script>
+    /**
+     * 簡易オブザーバー
+     * @Constructor
+     */
+    var Observer = (function() {
+      'use strict';
+
+      function Observer() {
+        if (!(this instanceof Observer)) {
+          return new Observer();
+        }
+        this.listeners = {};
+      }
+
+      Observer.prototype.on = function(event, func) {
+        if (!this.listeners[event]) {
+          this.listeners[event] = [];
+        }
+        this.listeners[event].push(func);
+      };
+
+      Observer.prototype.off = function(event, func) {
+        var ref = this.listeners[event];
+        for (var i = 0, len = ref.length; i < len; i++) {
+          if (ref[i] === func) {
+            ref.splice(i, 1);
+          }
+        }
+      };
+
+      Observer.prototype.trigger = function(event, opt) {
+        var ref = this.listeners[event];
+        for (var i = 0, len = ref.length; i < len; i++) {
+          if (typeof ref[i] === 'function') {
+            ref[i](opt);
+          }
+        }
+      };
+
+      return Observer;
+    })();
+
+
+    var observer = new Observer();
+    var box1 = document.getElementById('box1');
+    var box2 = document.getElementById('box2');
+    var btn1 = document.getElementById('btn1');
+
+    /**
+     * box1の背景色を変更
+     * @param {string} - 色名
+     */
+    var change_bg_box1 = function(color) {
+      box1.style.backgroundColor = color;
+    };
+
+    /**
+     * box2の背景色を変更
+     * @param {string} - 色名
+     */
+    var change_bg_box2 = function(color) {
+      box2.style.backgroundColor = color;
+    };
+
+    observer.on('box1', change_bg_box1);
+    observer.on('box2', change_bg_box2);
+
+    /**
+     * btn1をクリックでオブザーバーに通知
+     * @event
+     */
+    btn1.onclick = function() {
+      observer.trigger('box1', 'blue');
+      observer.trigger('box2', 'red');
+    };
+  </script>
+
+</body>
+
+</html>

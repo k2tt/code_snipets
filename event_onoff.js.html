@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>イベントリスナー</title>
+</head>
+
+<body>
+
+  <button type="button" id="button1">ボタン1（イベントは一度だけ）</button>
+  <button type="button" id="button2">ボタン2（イベントは一度だけ）</button>
+  <button type="button" id="button3">ボタン3</button>
+  <button type="button" id="button4">ボタン4（ボタン3のイベントを削除）</button>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.on
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.on = (function() {
+      'use strict';
+
+      /**
+       * イベントリスナー
+       * @param {object} - DOMオブジェクト
+       * @param {string} - イベント名
+       * @param {function} コールバック関数
+       */
+      var on = function(target, eventName, callback) {
+        if (!eventName) {
+          return false;
+        }
+        eventName = eventName.toLowerCase();
+        if (window.addEventListener) {
+          target.addEventListener(eventName, callback, false);
+        } else if (window.attachEvent) {
+          target.attachEvent('on' + eventName, callback);
+        }
+      };
+
+      return on;
+    }());
+
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.off
+     */
+    MYAPP.modules.off = (function() {
+      'use strict';
+
+      /**
+       * イベントリスナー削除
+       * @param {object} - DOMオブジェクト
+       * @param {string} - イベント名
+       * @param {function} 削除する関数名
+       */
+      var off = function(target, eventName, callback) {
+        if (!eventName) {
+          return false;
+        }
+        eventName = eventName.toLowerCase();
+        if (window.removeEventListener) {
+          target.removeEventListener(eventName, callback, false);
+        } else if (window.detachEvent) {
+          target.detachEvent('on' + eventName, callback);
+        }
+      };
+
+      return off;
+    }());
+
+    //test
+    var target1 = document.getElementById('button1');
+    var target2 = document.getElementById('button2');
+    var target3 = document.getElementById('button3');
+    var target4 = document.getElementById('button4');
+
+    //コールバックが無名関数のケース
+    MYAPP.modules.on(target1, 'click', function () {
+      console.log('OK');
+      //無名関数は外からは消すことが出来ない
+      // 消す場合は、関数内offのタイミングを定義しておく
+      MYAPP.modules.off(target1, 'click', arguments.callee);
+    });
+
+    //コールバックが名前あり関数のケース。引数が渡せない
+    function goodFunction () {
+      console.log('GOOD');
+      MYAPP.modules.off(target2, 'click', goodFunction);
+    }
+    MYAPP.modules.on(target2, 'click', goodFunction);
+
+    //引数を渡す場合は即時関数でラップして渡す
+    //返す関数に名前を付ければ外からイベントを消すことが出来る
+    var funcName;
+    function calcFunction (x, y) {
+      return x + y;
+    }
+
+    MYAPP.modules.on(target3, 'click', (function (x, y) {
+      funcName = function () {
+        var result = calcFunction(x, y);
+        console.log(result);
+      };
+      return funcName;
+    })(100, 20));
+
+    MYAPP.modules.on(target4, 'click', function () {
+      console.log('target3のイベントを削除');
+      MYAPP.modules.off(target3, 'click', funcName);
+      console.log('自身のイベントも削除');
+      MYAPP.modules.off(target4, 'click', arguments.callee);
+    });
+
+  </script>
+
+</body>
+
+</html>

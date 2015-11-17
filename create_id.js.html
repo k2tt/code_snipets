@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ID作成</title>
+</head>
+
+<body>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.createId
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.createId = (function() {
+      'use strict';
+
+      /**
+       * ランダム文字列作成
+       * @param {number} - 桁数
+       * @param {number} - ハイフンを入れる桁数（デフォルト値は 0）
+       * @return {string} ID
+       */
+      var createId = function(n, opt_hyphen) {
+        var id = [];
+        var HYPHEN = opt_hyphen || 0;
+        var i;
+
+        for (i = 1; i <= n; i++) {
+          id.push(Math.floor((1 + Math.random()) * 100).toString(16).substring(1));
+
+          //HYPHEN 桁毎にハイフンを入れる
+          if (i % HYPHEN === 0 && i !== n) {
+            id.push('-');
+          }
+        }
+
+        return id.join('');
+      };
+
+      return createId;
+    }());
+
+    //test
+    var id = MYAPP.modules.createId(12, 4);
+    console.log(id);
+  </script>
+
+</body>
+
+</html>

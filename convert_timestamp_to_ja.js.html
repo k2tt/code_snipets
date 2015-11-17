@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>タイムスタンプを日本形式に変換</title>
+</head>
+
+<body>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.convertTimestampToJa
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.convertTimestampToJa = (function() {
+      'use strict';
+
+      /**
+       * タイムスタンプを日本形式に変換
+       * @param {string} - 変換するタイムスタンプ
+       * @return {string} 変換したタイムスタンプ
+       */
+      var convertTimestampToJa = function(timestamp) {
+        var jaFormatDate;
+        var temp1 = timestamp.split(' T ');
+        var temp2 = temp1[0].split('-');
+
+        jaFormatDate = temp2[0] + '年' + temp2[1] + '月' + temp2[2] + '日';
+        jaFormatDate = jaFormatDate + ' ' + temp1[1];
+
+        return jaFormatDate;
+      };
+
+      return convertTimestampToJa;
+    }());
+
+    //test
+    var timestamp = MYAPP.modules.convertTimestampToJa('2015-10-09 T 11:41:30');
+    console.log(timestamp);
+  </script>
+
+</body>
+
+</html>

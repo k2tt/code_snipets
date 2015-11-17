@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>タイムスタンプ作成</title>
+</head>
+
+<body>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.createTimestamp
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.createTimestamp = (function() {
+      'use strict';
+
+      /**
+       * タイムスタンプ作成
+       * @return {string} 現在時刻（YYYY-MM-DDTHH:mm）
+       */
+      var createTimestamp = function() {
+        var DATE_OBJ = new Date();
+        var MONTH = (DATE_OBJ.getMonth() + 1) + '';
+        var DATE = DATE_OBJ.getDate() + '';
+        var HOURS = DATE_OBJ.getHours() + '';
+        var MINUTES = DATE_OBJ.getMinutes() + '';
+        var SECONDS = DATE_OBJ.getSeconds() + '';
+        var timestamp = [];
+
+        timestamp.push(DATE_OBJ.getFullYear());
+        timestamp.push('-');
+        timestamp.push((MONTH.length === 1) ? '0' + MONTH : MONTH);
+        timestamp.push('-');
+        timestamp.push((DATE.length === 1) ? '0' + DATE : DATE);
+        timestamp.push(' T ');
+        timestamp.push((HOURS.length === 1) ? '0' + HOURS : HOURS);
+        timestamp.push(':');
+        timestamp.push((MINUTES.length === 1) ? '0' + MINUTES : MINUTES);
+        timestamp.push(':');
+        timestamp.push((SECONDS.length === 1) ? '0' + SECONDS : SECONDS);
+
+        return timestamp.join('');
+      };
+
+      return createTimestamp;
+    }());
+
+    //test
+    var timestamp = MYAPP.modules.createTimestamp();
+    console.log(timestamp);
+  </script>
+
+</body>
+
+</html>
