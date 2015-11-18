@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>要素が画面に表示されているかを判定</title>
+</head>
+
+<body>
+
+  <div style="height: 500px;"></div>
+
+  <div id="target" style="background: #f00;">
+    a
+    <br> b
+    <br> c
+    <br> d
+    <br> e
+  </div>
+
+  <div style="height: 500px;"></div>
+
+  <script>
+    /**
+     * 名前空間作成
+     * @namespace MYAPP.modules.createId
+     */
+    var MYAPP = MYAPP || {};
+    MYAPP.modules = MYAPP.modules || {};
+
+    MYAPP.modules.isViewable = (function() {
+      'use strict';
+
+      /**
+       * 要素が画面に表示されているかを判定
+       * @type {Object}
+       */
+      var isViewable = {
+        x: {
+
+          /**
+           * 横スクロールされた値を返す（クロスブラウザ互換）
+           * @return {[number]} [description]
+           */
+          getScroll: function() {
+            return (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+          }
+        },
+        y: {
+
+          /**
+           * 縦スクロールされた値を返す（クロスブラウザ互換）
+           * @return {number}
+           */
+          getScroll: function() {
+            return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+          },
+
+          /**
+           * 要素の上端が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          top: function(e) {
+            console.log(typeof e);
+            var _y = this.getScroll();
+            return (_y + window.innerHeight) >= e.offsetTop &&
+              (e.offsetTop - _y) >= 0;
+          },
+
+          /**
+           * 要素の下端が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          bottom: function(e) {
+            var _y = this.getScroll();
+            return (_y + window.innerHeight) >= (e.clientHeight + e.offsetTop) &&
+              (e.offsetTop + e.clientHeight - _y) >= 0;
+          },
+
+          /**
+           * 要素の上端及び下端（要素全体）が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          both: function(e) {
+            return this.top(e) && this.bottom(e);
+          }
+        }
+      };
+
+      return isViewable;
+    }());
+
+    //test
+    console.log('top: ' + MYAPP.modules.isViewable.y.top(document.getElementById('target')));
+    console.log('bottom: ' + MYAPP.modules.isViewable.y.bottom(document.getElementById('target')));
+    console.log('both: ' + MYAPP.modules.isViewable.y.both(document.getElementById('target')));
+  </script>
+</body>
+
+</html>
