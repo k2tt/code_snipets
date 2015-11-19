@@ -6,11 +6,11 @@
   <title>要素が画面に表示されているかを判定</title>
 </head>
 
-<body>
+<body style="padding: 0 400px 0 800px; width: 500px;">
 
   <div style="height: 500px;"></div>
 
-  <div id="target" style="background: #f00;">
+  <div id="target" style="background: #f00; border:20px solid #00f; width: 300px; padding: 20px;">
     a
     <br> b
     <br> c
@@ -23,7 +23,7 @@
   <script>
     /**
      * 名前空間作成
-     * @namespace MYAPP.modules.createId
+     * @namespace MYAPP.modules.isViewable
      */
     var MYAPP = MYAPP || {};
     MYAPP.modules = MYAPP.modules || {};
@@ -40,11 +40,43 @@
 
           /**
            * 横スクロールされた値を返す（クロスブラウザ互換）
-           * @return {[number]} [description]
+           * @return {number}
            */
           getScroll: function() {
             return (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+          },
+
+          /**
+           * 要素の左端が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          left: function(e) {
+            var _x = this.getScroll();
+            return (_x + window.innerWidth) >= e.offsetLeft &&
+              (e.offsetLeft - _x) >= 0;
+          },
+
+          /**
+           * 要素の右端が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          right: function(e) {
+            var _x = this.getScroll();
+            return (_x + window.innerWidth) >= (e.offsetWidth + e.offsetLeft) &&
+              (e.offsetLeft + e.offsetWidth - _x) >= 0;
+          },
+
+          /**
+           * 要素の左端及び右端（要素左右全体）が表示領域に入っているか
+           * @param  {element} e
+           * @return {boolean}
+           */
+          both: function(e) {
+            return this.left(e) && this.right(e);
           }
+
         },
         y: {
 
@@ -62,7 +94,6 @@
            * @return {boolean}
            */
           top: function(e) {
-            console.log(typeof e);
             var _y = this.getScroll();
             return (_y + window.innerHeight) >= e.offsetTop &&
               (e.offsetTop - _y) >= 0;
@@ -75,12 +106,12 @@
            */
           bottom: function(e) {
             var _y = this.getScroll();
-            return (_y + window.innerHeight) >= (e.clientHeight + e.offsetTop) &&
-              (e.offsetTop + e.clientHeight - _y) >= 0;
+            return (_y + window.innerHeight) >= (e.offsetHeight + e.offsetTop) &&
+              (e.offsetTop + e.offsetHeight - _y) >= 0;
           },
 
           /**
-           * 要素の上端及び下端（要素全体）が表示領域に入っているか
+           * 要素の上端及び下端（要素上下全体）が表示領域に入っているか
            * @param  {element} e
            * @return {boolean}
            */
@@ -96,7 +127,13 @@
     //test
     console.log('top: ' + MYAPP.modules.isViewable.y.top(document.getElementById('target')));
     console.log('bottom: ' + MYAPP.modules.isViewable.y.bottom(document.getElementById('target')));
-    console.log('both: ' + MYAPP.modules.isViewable.y.both(document.getElementById('target')));
+    console.log('y-both: ' + MYAPP.modules.isViewable.y.both(document.getElementById('target')));
+    console.log('left: ' + MYAPP.modules.isViewable.x.left(document.getElementById('target')));
+    console.log('right: ' + MYAPP.modules.isViewable.x.right(document.getElementById('target')));
+    console.log('x-both: ' + MYAPP.modules.isViewable.x.both(document.getElementById('target')));
+
+    //TODO
+    // 縦横全て含む時判定
   </script>
 </body>
 
