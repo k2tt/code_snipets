@@ -36,6 +36,16 @@
        * @type {Object}
        */
       var isViewable = {
+
+        /**
+         * 要素全体が表示領域に入っているか
+         * @param  {element} e
+         * @return {boolean}
+         */
+        all: function (e) {
+          return this.x.both(e) && this.y.both(e);
+        },
+
         x: {
 
           /**
@@ -131,9 +141,8 @@
     console.log('left: ' + MYAPP.modules.isViewable.x.left(document.getElementById('target')));
     console.log('right: ' + MYAPP.modules.isViewable.x.right(document.getElementById('target')));
     console.log('x-both: ' + MYAPP.modules.isViewable.x.both(document.getElementById('target')));
+    console.log('all: ' + MYAPP.modules.isViewable.all(document.getElementById('target')));
 
-    //TODO
-    // 縦横全て含む時判定
   </script>
 </body>
 
